@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<head></head>
+<body>
+    <div>
+        
+            <form id="form">
+                <label class="label">Name</label>
+                <input type="text" id="Name" class="input">
+             
+                <br/>
+                <label class="label">ID</label>
+                <input type="number" id="Id" class="input">
+               
+                <br/>
+                <label class="label">Email</label>
+                <input type="email" class="input" id="Email" >
+              
+                <br/>
+                <button type="submit" onclick="addValue()" class="sub" >Submit</button>
+            </form>
+    </div>
+
+<script>
+    const names = [];
+    const ids = [];
+    const emails = [];
+    
+    const form = document.getElementById('form');
+
+    form.addEventListener('submit',run);
+
+
+    var i = 0;
+     function run(event) {
+            let name = document.getElementById('Name');
+            let id = document.getElementById('Id');
+            let email = document.getElementById('Email');
+
+            names.push(name);
+            ids.push(ids);
+            emails.push(emails);
+            //console.log(names);
+    };
+</script>
+
+
+    <div id="output"></div>
+
+    <input type="file" accept="text/plain" id="fileId">
+    <br/>
+    <button class="sub">Read</button>
+    <script>
+        document.getElementById('fileId').addEventListener('click', function myfiles(){
+            var file = document.getElementById("fileId").files[0];
+            var readFile = new FileReader();
+            readFile.addEventListener('load', function (event) {
+                var text = event.target.result;
+                document.getElementById("output").textContent = text;
+            });
+            readFile.readAsText(file);
+        });
+    </script>
+</body>
+<style>
+    body {
+  text-align: center;
+}
+#form {
+  padding: 50px;
+  width: 50%;
+  margin: auto;
+  font-size: 20px;
+}
+.input {
+  padding: 10px;
+  margin: 5px;
+  width: 50%;
+}
+.sub {
+  padding: 7px;
+}
+.label {
+  width: 10%;
+  margin: 10px;
+}
+</style>
+</html>
