@@ -58,7 +58,7 @@
 
                 let objectStore = tempDB.createObjectStore('Temp', { keypath : 'id', autoIncrement: true});
 
-                objectStore.createIndex('title', 'title', {unique : true});
+                objectStore.createIndex('title', 'title', {unique : false});
                 objectStore.createIndex('body', 'body', {unique : false});
 
                 console.log("Detabase Created");
