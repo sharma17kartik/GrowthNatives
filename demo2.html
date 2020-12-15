@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="utf-8">
+</head>
+
+<body">
+            <form>
+                <div class="col-md-10">
+                    <label>Name</label>
+                    <input id="title" type="text" required>
+                </div>
+                <div class="col-md-10">
+                    <label>Address</label>
+                    <input id="body" type="text" required>
+                </div>
+                <div class="col-md-10">
+                    <button  id="submitdata">Create new note</button>
+                </div>
+            </form>
+            <br/>
+            DataBase Items : /n 
+            <p style="text-align: center;">
+            <ol></ol></p>
+
+    <script>
+
+        const form = document.querySelector('form');
+        const submitbtn = document.getElementById('submitdata');
+        var titleInput = document.getElementById('title');
+        var bodyInput = document.getElementById('body');
+        var list = document.querySelector('ol');
+
+        let db;
+
+        window.onload = function(){
+
+            let request = window.indexedDB.open('MyDB',1);
+
+            request.onerror  = function(){
+                console.log("Error");
+            }
+
+            request.onsuccess= function(){
+                console.log("Database Fetch");
+                db = request.result;
+                readall();
+            };
+
+            request.onupgradeneeded = function(event){
+                console.log('New Elements');
+
+                let tempDB = event.target.result;
+
+                let objectStore = tempDB.createObjectStore('Temp', { keypath : 'id', autoIncrement: true});
+
+                objectStore.createIndex('title', 'title', {unique : true});
+                objectStore.createIndex('body', 'body', {unique : false});
+
+                console.log("Detabase Created");
+            };
+
+                form.onsubmit = addData;
+
+                function addData(e){
+                    e.preventDefault();
+
+                    let newElement = { title : titleInput.value, body : bodyInput.value};
+
+                    let transaction = db.transaction('Temp', 'readwrite');
+
+                    let objectStore = transaction.objectStore('Temp');
+
+                    let request = objectStore.add(newElement);
+                    transaction.onsuccess = function(){
+                        titleInput.value = '';
+                        bodyInput.value = '';
+                    };
+
+                    transaction.oncomplete = function(){
+                        console.log('Completed');
+                        readall();
+                    }
+
+                    transaction.onerror = function(){
+                        console.log('Error');
+                    }
+
+
+                }
+
+                function readall(){
+
+                    while(list.firstChild){
+                        list.removeChild(list.firstChild);
+                    }
+
+                    let store = db.transaction('Temp').objectStore('Temp');
+                    
+                    store.openCursor().onsuccess = function (e) {
+                        console.log('Notes all displayed');
+                        let cursor = e.target.result;
+                        if(cursor){
+
+                            const li = document.createElement('li');
+                            const p1 = document.createElement('p');
+                            const p = document.createElement('p');
+                            li.appendChild(p1);
+                            li.appendChild(p);
+                            list.appendChild(li);
+                            //list.appendChild(p);
+
+                            console.log(cursor.value.title);
+                            console.log(cursor.value.body);
+                            p1.textContent = cursor.value.title;
+                            p.textContent = cursor.value.body;
+                            cursor.continue();
+                        }
+                        else
+                            console.log("Empty");
+                    };
+                } 
+            }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
